@@ -36,8 +36,8 @@ const ModalHeader = ({navigation, editing}: any) => (
       <CloseIcon />
     </TouchableOpacity>
     <Text style={styles.title}>New Poll</Text>
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Text style={[styles.create, {color: editing ? '#1C6EF2' : 'white'}]}>
+    <TouchableOpacity onPress={() => (editing ? navigation.goBack() : null)}>
+      <Text style={[styles.create, {color: editing ? '#1C6EF2' : '#7E7A9A'}]}>
         Create
       </Text>
     </TouchableOpacity>
@@ -56,11 +56,8 @@ const Question = ({value, setQuestionValue}) => {
         placeholder="Ask a question"
         placeholderTextColor="#7E7A9A"
         value={value}
-        onChangeText={newValue => {
-          if (newValue.length <= QUESTION_LENGTH_LIMIT) {
-            setQuestionValue(newValue);
-          }
-        }}
+        maxLength={QUESTION_LENGTH_LIMIT}
+        onChangeText={setQuestionValue}
         multiline={true}
       />
     </View>
@@ -86,11 +83,11 @@ const Options = () => {
 
 const Option = () => (
   <View style={styles.option}>
-    <TextInput style={styles.optionText}>Los Angeles Lakers</TextInput>
-    <TouchableOpacity onPress={() => {}}>
-      <View style={styles.removeOption}>
-        <CloseIcon />
-      </View>
+    <TextInput numberOfLines={1} style={styles.optionText}>
+      Los Angeles Lakers
+    </TextInput>
+    <TouchableOpacity style={styles.removeOption} onPress={() => {}}>
+      <CloseIcon />
     </TouchableOpacity>
   </View>
 );
@@ -242,6 +239,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'Poppins-Regular',
     fontSize: 15,
+    flexShrink: 1,
+    paddingRight: 15,
   },
   removeOption: {
     width: 50,
@@ -251,6 +250,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C233F',
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'flex-end',
   },
   votingContainer: {
     flex: 1,
