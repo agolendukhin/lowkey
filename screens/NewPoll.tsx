@@ -64,35 +64,52 @@ const Question = ({value, setQuestionValue}) => {
   );
 };
 
-const Options = () => {
+const Options = ({options, setOptions}: any) => {
+  const removeOption = id => {
+    setOptions(options.filter(o => o.id !== id));
+  };
+
+  const addOption = () => {
+    setOptions([
+      ...options,
+      {id: Math.max(...options.map(o => o.id)) + 1, text: ''},
+    ]);
+  };
+
   return (
     <View style={styles.optionsContainer}>
       <View style={styles.labelContainer}>
         <Text style={styles.label}>Options</Text>
-        <Text style={styles.label}>0/8</Text>
+        <Text style={styles.label}>{options.length}/8</Text>
       </View>
-      <Option />
-      <TouchableOpacity onPress={() => {}}>
-        <View style={styles.option}>
-          <Text style={styles.addOptionText}>Add an option</Text>
-        </View>
-      </TouchableOpacity>
+      {options.map(o => (
+        <Option option={o} removeOption={removeOption} />
+      ))}
+      {options.length < 8 && (
+        <TouchableOpacity onPress={() => addOption()}>
+          <View style={styles.option}>
+            <Text style={styles.addOptionText}>Add an option</Text>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
-const Option = () => (
+const Option = ({option, removeOption}: any) => (
   <View style={styles.option}>
     <TextInput numberOfLines={1} style={styles.optionText}>
-      Los Angeles Lakers
+      {option.text}
     </TextInput>
-    <TouchableOpacity style={styles.removeOption} onPress={() => {}}>
+    <TouchableOpacity
+      style={styles.removeOption}
+      onPress={() => removeOption(option.id)}>
       <CloseIcon />
     </TouchableOpacity>
   </View>
 );
 
-const Voting = () => (
+const Voting = ({value, setValue}) => (
   <View style={styles.votingContainer}>
     <View style={{flexDirection: 'row'}}>
       <UserSecretIcon />
@@ -101,12 +118,13 @@ const Voting = () => (
     <Switch
       style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
       trackColor={{false: '#767577', true: blue}}
-      value={true}
+      value={value}
+      onValueChange={setValue}
     />
   </View>
 );
 
-const MoreOptions = () => (
+const MoreOptions = ({value, setValue}) => (
   <View style={styles.votingContainer}>
     <View style={{flexDirection: 'row'}}>
       <AddToListIcon />
@@ -117,13 +135,27 @@ const MoreOptions = () => (
     <Switch
       style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
       trackColor={{false: '#767577', true: blue}}
-      value={true}
+      value={value}
+      onValueChange={setValue}
     />
   </View>
 );
 
+const DEFAULT_OPTIONS = [
+  {
+    id: 1,
+    text: 'Los Angeles Lakers',
+  },
+  {id: 2, text: 'Golden State Warriors'},
+  {id: 3, text: 'Chicago Bulls'},
+  {id: 4, text: 'Boston Celtics'},
+];
+
 const NewPoll = ({navigation}) => {
   const [questionValue, setQuestionValue] = useState('');
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const [votingEnabled, setVotingEnabled] = useState(false);
+  const [moreOptionsEnabled, setMoreOptionsEnabled] = useState(false);
 
   const isEditing = () => {
     if (questionValue !== '') {
@@ -143,9 +175,12 @@ const NewPoll = ({navigation}) => {
         <View style={styles.mainContainer}>
           <ModalHeader navigation={navigation} editing={editing} />
           <Question value={questionValue} setQuestionValue={setQuestionValue} />
-          <Options />
-          <Voting />
-          <MoreOptions />
+          <Options options={options} setOptions={setOptions} />
+          <Voting value={votingEnabled} setValue={setVotingEnabled} />
+          <MoreOptions
+            value={moreOptionsEnabled}
+            setValue={setMoreOptionsEnabled}
+          />
         </View>
       </View>
     </View>
