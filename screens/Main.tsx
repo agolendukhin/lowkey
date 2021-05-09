@@ -8,22 +8,21 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  useColorScheme,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
+import {black, blue} from '../colors';
 
-export default ({navigation}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-
+const App = ({navigation}: any) => {
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: black,
   };
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle="light-content" />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{height: '100%'}}
@@ -33,14 +32,22 @@ export default ({navigation}) => {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: black,
           }}>
-          <Button
-            title="Create a poll"
-            onPress={() => navigation.navigate('NewPoll')}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate('NewPoll')}>
+            <Text
+              style={{
+                color: blue,
+                fontSize: 16,
+                fontFamily: 'Poppins-Regular',
+              }}>
+              Create a new poll
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+export default App;

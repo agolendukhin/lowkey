@@ -16,7 +16,13 @@ const App: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen
+          name="Main"
+          component={MainScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen name="NewPoll" component={NewPoll} />
       </Stack.Navigator>
     </NavigationContainer>
