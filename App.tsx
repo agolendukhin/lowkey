@@ -8,23 +8,44 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from './screens/Main';
-import NewPoll from './screens/NewPoll';
+import NewPollScreen from './screens/NewPoll';
+import ChatScreen from './screens/Chat';
 
-const Stack = createStackNavigator();
+const MainStack = createStackNavigator();
+const RootStack = createStackNavigator();
+
+const MainStackScreen: React.FC = () => {
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen
+        name="Main"
+        component={MainScreen}
+        options={{headerShown: false}}
+      />
+      <MainStack.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{headerShown: false}}
+      />
+    </MainStack.Navigator>
+  );
+};
 
 const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen
+      <RootStack.Navigator mode="modal">
+        <RootStack.Screen
           name="Main"
-          component={MainScreen}
-          options={{
-            headerShown: false,
-          }}
+          component={MainStackScreen}
+          options={{headerShown: false}}
         />
-        <Stack.Screen name="NewPoll" component={NewPoll} />
-      </Stack.Navigator>
+        <RootStack.Screen
+          name="NewPoll"
+          component={NewPollScreen}
+          options={{headerShown: false}}
+        />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 };
