@@ -3,7 +3,7 @@
     on 08.05.2021:19:17
 */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {black, blue} from '../colors';
 import {AddToListIcon, CloseIcon, UserSecretIcon} from '../icons';
+
+const QUESTION_LENGTH_LIMIT = 140;
 
 const Header = () => <View style={{height: 64, backgroundColor: black}}></View>;
 
@@ -28,31 +30,42 @@ const Gradient = () => (
   />
 );
 
-const ModalHeader = ({navigation}) => (
+const ModalHeader = ({navigation, editing}: any) => (
   <View style={styles.header}>
     <TouchableOpacity onPress={() => navigation.goBack()}>
       <CloseIcon />
     </TouchableOpacity>
     <Text style={styles.title}>New Poll</Text>
     <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Text style={styles.create}>Create</Text>
+      <Text style={[styles.create, {color: editing ? '#1C6EF2' : 'white'}]}>
+        Create
+      </Text>
     </TouchableOpacity>
   </View>
 );
 
-const Question = () => (
-  <View>
-    <View style={styles.labelContainer}>
-      <Text style={styles.label}>Question</Text>
-      <Text style={styles.label}>0/140</Text>
+const Question = ({value, setQuestionValue}) => {
+  return (
+    <View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Question</Text>
+        <Text style={styles.label}>{value.length}/140</Text>
+      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Ask a question"
+        placeholderTextColor="#7E7A9A"
+        value={value}
+        onChangeText={newValue => {
+          if (newValue.length <= QUESTION_LENGTH_LIMIT) {
+            setQuestionValue(newValue);
+          }
+        }}
+        multiline={true}
+      />
     </View>
-    <TextInput
-      style={styles.input}
-      placeholder="Ask a question"
-      placeholderTextColor="#7E7A9A"
-    />
-  </View>
-);
+  );
+};
 
 const Options = () => {
   return (
@@ -100,7 +113,7 @@ const MoreOptions = () => (
   <View style={styles.votingContainer}>
     <View style={{flexDirection: 'row'}}>
       <AddToListIcon />
-      <Text style={[styles.votingText, {marginLeft: 10}]}>
+      <Text style={[styles.votingText, {marginLeft: 12}]}>
         Ability to add more options
       </Text>
     </View>
@@ -113,14 +126,26 @@ const MoreOptions = () => (
 );
 
 const NewPoll = ({navigation}) => {
+  const [questionValue, setQuestionValue] = useState('');
+
+  const isEditing = () => {
+    if (questionValue !== '') {
+      return true;
+    }
+
+    return false;
+  };
+
+  const editing = isEditing();
+
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <Header />
       <View style={styles.gradientContainer}>
         <Gradient />
         <View style={styles.mainContainer}>
-          <ModalHeader navigation={navigation} />
-          <Question />
+          <ModalHeader navigation={navigation} editing={editing} />
+          <Question value={questionValue} setQuestionValue={setQuestionValue} />
           <Options />
           <Voting />
           <MoreOptions />
@@ -133,6 +158,9 @@ const NewPoll = ({navigation}) => {
 export default NewPoll;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   gradientContainer: {
     flex: 1,
     backgroundColor: black,
@@ -179,13 +207,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    height: 50,
+    minHeight: 50,
     backgroundColor: '#1C1A2A',
     borderRadius: 12,
     color: 'white',
     fontFamily: 'Poppins-Regular',
     fontSize: 15,
     paddingLeft: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingRight: 15,
   },
   optionsContainer: {
     marginTop: 25,
