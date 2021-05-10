@@ -7,7 +7,11 @@
 
 ### Run
 To start project on ios
-1. npm install
-2. npx react-native run-ios
+1. ```npm install```
+2. ```npx react-native run-ios```
+
+If it will not work try to run 
+- ```npx react-native link```
 
 Currently it has only one screen, the second one (Chat) is not finished. 
+Also the app is not tested on android. 
