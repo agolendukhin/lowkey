@@ -4,7 +4,6 @@
 */
 
 import {
-  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -12,10 +11,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {black, blue} from '../colors';
+import {black, blue} from '../common/colors';
 
-const App = ({navigation}: any) => {
+const Main: React.FC = () => {
+  const navigation = useNavigation();
+
   const backgroundStyle = {
     backgroundColor: black,
   };
@@ -40,8 +42,19 @@ const App = ({navigation}: any) => {
                 color: blue,
                 fontSize: 16,
                 fontFamily: 'Poppins-Regular',
+                marginBottom: 20,
               }}>
               Create a new poll
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+            <Text
+              style={{
+                color: blue,
+                fontSize: 16,
+                fontFamily: 'Poppins-Regular',
+              }}>
+              Chat
             </Text>
           </TouchableOpacity>
         </View>
@@ -50,4 +63,4 @@ const App = ({navigation}: any) => {
   );
 };
 
-export default App;
+export default Main;
