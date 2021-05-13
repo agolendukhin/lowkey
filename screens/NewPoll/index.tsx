@@ -10,7 +10,7 @@ import ModalHeader from './ModalHeader';
 import Question from './Question';
 import AppSwitch from './AppSwitch';
 import Options from './Options';
-import {black, modalGradientColors} from '../../common/colors';
+import {black, blue} from '../../common/colors';
 import {AddToListIcon, UserSecretIcon} from '../../common/icons';
 
 const DEFAULT_OPTIONS = [
@@ -37,7 +37,7 @@ const Gradient: React.FC = () => (
     useAngle={true}
     angle={154}
     angleCenter={{x: 0, y: 0}}
-    colors={modalGradientColors}
+    colors={[blue, black]}
     style={styles.gradient}
   />
 );
