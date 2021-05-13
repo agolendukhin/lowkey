@@ -17,6 +17,7 @@ import {CloseIcon, MenuIcon, RecordIcon} from '../common/icons';
 import {black, blue, darkPurple, gray, white} from '../common/colors';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import {MESSAGES} from '../mock';
 
 const PollGradient: React.FC = ({height}) => (
   <LinearGradient
@@ -139,6 +140,25 @@ const Poll: React.FC = () => {
   );
 };
 
+const Messages: React.FC = () => {
+  // return <Text style={styles.message}>Hello</Text>;
+  return (
+    <View style={styles.messagesContainer}>
+      {MESSAGES.map(message => (
+        <View style={styles.message}>
+          <Image
+            style={styles.chatAvatar}
+            source={require('../assets/images/scarletwitch.png')}></Image>
+          <View style={{marginLeft: 10}}>
+            <Text style={styles.sender}>Anthony Stark</Text>
+            <Text style={styles.messageText}>{message.text}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+};
+
 export default () => {
   const navigation = useNavigation();
   const [message, setMessage] = useState('');
@@ -163,6 +183,7 @@ export default () => {
       </View>
       <View style={{flex: 1}}>
         <ScrollView style={styles.chatContainer}>
+          <Messages></Messages>
           <Poll />
         </ScrollView>
         <View style={styles.footerContainer}>
@@ -289,5 +310,22 @@ const styles = StyleSheet.create({
     color: white,
     fontSize: 12,
     fontFamily: 'Poppins-Regular',
+  },
+  messagesContainer: {
+    paddingRight: 20,
+  },
+  message: {
+    flexDirection: 'row',
+    marginBottom: 13,
+  },
+  messageText: {
+    color: white,
+    fontSize: 15,
+    fontFamily: 'Poppins-Regular',
+  },
+  sender: {
+    color: '#7E7A9A',
+    fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
   },
 });

@@ -110,7 +110,7 @@ export const MESSAGES: IMessage[] = [
   {
     id: 3,
     chatId: 1,
-    senderId: 2,
+    senderId: 3,
     text: 'It looks like Christmas. Only with more...me.',
     type: EMesssageTypes.text,
     timestamp: 1620919414718,
