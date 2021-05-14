@@ -3,7 +3,7 @@
     on 09.05.2021:13:21
 */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,10 @@ import {CloseIcon, MenuIcon, RecordIcon} from '../common/icons';
 import {black, blue, darkPurple, gray, white} from '../common/colors';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {MESSAGES} from '../mock';
+import Highlighter from 'react-native-highlight-words';
+import HighlightedText from '../common/HighlighedText';
+import {EMesssageTypes, IMessage, IUser, MESSAGES, USERS} from '../mock';
+import {getFullName} from '../common/utils';
 
 const PollGradient: React.FC = ({height}) => (
   <LinearGradient
@@ -30,7 +33,12 @@ const PollGradient: React.FC = ({height}) => (
   />
 );
 
-const Poll: React.FC = () => {
+interface PollProps {
+  user: IUser;
+  message: IMessage;
+}
+
+const Poll: React.FC<PollProps> = ({user, message}) => {
   const [gradientHeight, setGradientHeight] = useState<number>(0);
   const defaultQuestionHeight = 22;
 
@@ -66,17 +74,16 @@ const Poll: React.FC = () => {
     setGradientHeight(gHeight);
   }, []);
 
+  const fullName = getFullName(user);
+
   return (
-    <View style={{position: 'relative', flex: 1, marginTop: 20}}>
+    <View style={{position: 'relative', flex: 1, marginBottom: 15}}>
       <PollGradient height={gradientHeight}></PollGradient>
       <View
         style={{position: 'absolute', paddingHorizontal: 20, width: '100%'}}>
         <View style={styles.pollHeader}>
           <View style={{flexDirection: 'row'}}>
-            <Image
-              style={styles.pollAvatar}
-              source={require('../assets/images/scarletwitch.png')}
-            />
+            <Image style={styles.pollAvatar} source={user.avatarSrc} />
             <View
               style={{
                 marginLeft: 10,
@@ -87,7 +94,7 @@ const Poll: React.FC = () => {
                   fontFamily: 'Poppins-Regular',
                   color: white,
                 }}>
-                Public Poll
+                {message?.poll?.private ? 'Private' : 'Public'} Poll
               </Text>
               <Text
                 style={{
@@ -95,7 +102,7 @@ const Poll: React.FC = () => {
                   fontFamily: 'Poppins-SemiBold',
                   color: white,
                 }}>
-                Wanda Maximoff
+                {fullName}
               </Text>
             </View>
           </View>
@@ -106,7 +113,7 @@ const Poll: React.FC = () => {
                 fontFamily: 'Poppins-SemiBold',
                 color: white,
               }}>
-              0
+              {message?.poll?.votesCount}
             </Text>
             <Text
               style={{
@@ -119,42 +126,79 @@ const Poll: React.FC = () => {
           </View>
         </View>
         <Text style={styles.question} onLayout={onQuestionLayout}>
-          What is the greatest NBA team in the history?
+          {message?.poll?.question}
         </Text>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option}>
-            <Text style={styles.optionText}>Iron Man</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Text style={styles.optionText}>Thor</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Text style={styles.optionText}>Jessica Jones</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Text style={styles.optionText}>Dr.Strange</Text>
-          </TouchableOpacity>
+          {message?.poll?.options.map(option => (
+            <TouchableOpacity style={styles.option} key={option.id}>
+              <Text style={styles.optionText}>{option.text}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     </View>
   );
 };
 
+const MESSAGES_DUPLICATE = MESSAGES.map(m => ({...m, id: m.id + 20}));
+
+const MESSAGES_MANY = [...MESSAGES, ...MESSAGES_DUPLICATE];
+
+const MessageText: React.FC<{message: IMessage; users: IUser[]}> = ({
+  message,
+  users,
+}) => {
+  if (!message.mentionedUserIds) {
+    return (
+      <Text key={message.id} style={styles.messageText}>
+        {message.text}
+      </Text>
+    );
+  }
+
+  const mentionedUserNicknames = users
+    .filter(u => message?.mentionedUserIds.includes(u.id))
+    .map(u => '@' + u.nickName);
+
+  return (
+    // @ts-ignore
+    <HighlightedText
+      key={message.id}
+      highlightStyle={styles.mentioned}
+      style={styles.messageText}
+      searchWords={mentionedUserNicknames}
+      textToHighlight={message.text}
+      onPress={(text: string) => {
+        // handle @mentioned clicked
+        console.log(text);
+      }}
+    />
+  );
+};
+
 const Messages: React.FC = () => {
-  // return <Text style={styles.message}>Hello</Text>;
   return (
     <View style={styles.messagesContainer}>
-      {MESSAGES.map(message => (
-        <View style={styles.message}>
-          <Image
-            style={styles.chatAvatar}
-            source={require('../assets/images/scarletwitch.png')}></Image>
-          <View style={{marginLeft: 10}}>
-            <Text style={styles.sender}>Anthony Stark</Text>
-            <Text style={styles.messageText}>{message.text}</Text>
-          </View>
-        </View>
-      ))}
+      {MESSAGES_MANY.map(message => {
+        const user = USERS.find(u => u.id === message.senderId);
+        if (!user) return null;
+
+        const fullName = getFullName(user);
+
+        if (message.type === EMesssageTypes.text) {
+          return (
+            <View style={styles.message} key={message.id}>
+              <Image style={styles.chatAvatar} source={user.avatarSrc} />
+              <View style={{marginLeft: 15, paddingRight: 20}}>
+                <Text style={styles.sender}>{fullName}</Text>
+                <MessageText message={message} users={USERS} />
+              </View>
+            </View>
+          );
+        } else {
+          return <Poll user={user} message={message} key={message.id} />;
+        }
+      })}
     </View>
   );
 };
@@ -162,6 +206,8 @@ const Messages: React.FC = () => {
 export default () => {
   const navigation = useNavigation();
   const [message, setMessage] = useState('');
+
+  const scrollRef = useRef();
 
   return (
     <View style={{flex: 1}}>
@@ -182,9 +228,13 @@ export default () => {
         />
       </View>
       <View style={{flex: 1}}>
-        <ScrollView style={styles.chatContainer}>
-          <Messages></Messages>
-          <Poll />
+        <ScrollView
+          style={styles.chatContainer}
+          ref={scrollRef}
+          onContentSizeChange={(contentWidth, contentHeight) => {
+            scrollRef.current.scrollToEnd({animated: true});
+          }}>
+          <Messages />
         </ScrollView>
         <View style={styles.footerContainer}>
           <MenuIcon />
@@ -269,13 +319,11 @@ const styles = StyleSheet.create({
   },
   pollContainer: {
     flex: 1,
-    // height: 334,
     backgroundColor: '#A83D7F',
     borderRadius: 18,
   },
   pollHeader: {
     paddingVertical: 20,
-    // width: '100%',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -311,21 +359,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Poppins-Regular',
   },
-  messagesContainer: {
-    paddingRight: 20,
-  },
+  messagesContainer: {},
   message: {
     flexDirection: 'row',
     marginBottom: 13,
+    paddingRight: 20,
   },
   messageText: {
     color: white,
     fontSize: 15,
     fontFamily: 'Poppins-Regular',
+    flex: 1,
+    flexWrap: 'wrap',
   },
   sender: {
     color: '#7E7A9A',
     fontSize: 12,
     fontFamily: 'Poppins-SemiBold',
+  },
+  mentioned: {
+    fontSize: 15,
+    fontFamily: 'Poppins-Regular',
+    color: blue,
+    paddingBottom: 2,
+    // marginTop: 2,
   },
 });
