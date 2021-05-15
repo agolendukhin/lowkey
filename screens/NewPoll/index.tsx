@@ -79,7 +79,7 @@ const NewPoll: React.FC = () => {
       <Header />
       <View style={styles.gradientContainer}>
         <Gradient />
-        <ScrollView style={styles.mainContainer} contentInset={{bottom: 80}}>
+        <ScrollView style={styles.mainContainer} contentInset={{bottom: 160}}>
           <ModalHeader editing={editing} />
           <Question value={questionValue} setQuestionValue={setQuestionValue} />
           <Options options={options} setOptions={setOptions} />
