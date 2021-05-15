@@ -14,10 +14,9 @@ import {
   TextInput,
 } from 'react-native';
 import {CloseIcon, MenuIcon, RecordIcon} from '../common/icons';
-import {black, blue, darkPurple, gray, white} from '../common/colors';
+import {blue, gray, white} from '../common/colors';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import Highlighter from 'react-native-highlight-words';
 import HighlightedText from '../common/HighlighedText';
 import {EMesssageTypes, IMessage, IUser, MESSAGES, USERS} from '../mock';
 import {getFullName} from '../common/utils';
@@ -28,7 +27,7 @@ const PollGradient: React.FC = ({height}) => (
     angle={134}
     angleCenter={{x: 0.15, y: 0.7}}
     colors={['#A83D7F', '#6F1D7A81', '#03114398', '#111135']}
-    locations={[0.01, 0.05, 0.5, 1]}
+    locations={[0.05, 0.1, 0.3, 1]}
     style={[styles.pollContainer, {height}]}
   />
 );
@@ -78,12 +77,14 @@ const Poll: React.FC<PollProps> = ({user, message}) => {
 
   return (
     <View style={{position: 'relative', flex: 1, marginBottom: 15}}>
-      <PollGradient height={gradientHeight}></PollGradient>
+      <PollGradient height={gradientHeight} />
       <View
         style={{position: 'absolute', paddingHorizontal: 20, width: '100%'}}>
         <View style={styles.pollHeader}>
           <View style={{flexDirection: 'row'}}>
-            <Image style={styles.pollAvatar} source={user.avatarSrc} />
+            <TouchableOpacity>
+              <Image style={styles.pollAvatar} source={user.avatarSrc} />
+            </TouchableOpacity>
             <View
               style={{
                 marginLeft: 10,
@@ -96,14 +97,16 @@ const Poll: React.FC<PollProps> = ({user, message}) => {
                 }}>
                 {message?.poll?.private ? 'Private' : 'Public'} Poll
               </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontFamily: 'Poppins-SemiBold',
-                  color: white,
-                }}>
-                {fullName}
-              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: 'Poppins-SemiBold',
+                    color: white,
+                  }}>
+                  {fullName}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.votesCircle}>
@@ -188,9 +191,13 @@ const Messages: React.FC = () => {
         if (message.type === EMesssageTypes.text) {
           return (
             <View style={styles.message} key={message.id}>
-              <Image style={styles.chatAvatar} source={user.avatarSrc} />
+              <TouchableOpacity>
+                <Image style={styles.chatAvatar} source={user.avatarSrc} />
+              </TouchableOpacity>
               <View style={{marginLeft: 15, paddingRight: 20}}>
-                <Text style={styles.sender}>{fullName}</Text>
+                <TouchableOpacity>
+                  <Text style={styles.sender}>{fullName}</Text>
+                </TouchableOpacity>
                 <MessageText message={message} users={USERS} />
               </View>
             </View>
@@ -209,6 +216,22 @@ export default () => {
 
   const scrollRef = useRef();
 
+  const countMembers = (messages: IMessage[]) => {
+    const members = messages.reduce((acc, curr) => {
+      const isUserOnline = USERS.find(u => u.id === curr.senderId)?.online;
+      // @ts-ignore
+      acc[curr.senderId] = isUserOnline;
+      return acc;
+    }, {});
+
+    return {
+      total: Object.keys(members).length,
+      online: Object.values(members).filter(online => online).length,
+    };
+  };
+
+  const {total: totalMembers, online} = countMembers(MESSAGES);
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.headerContainer}>
@@ -218,35 +241,47 @@ export default () => {
           </TouchableOpacity>
         </View>
         <View>
-          <Text style={styles.title}>Lowkey Squad</Text>
-          <Text style={styles.online}>7 members • 1 online</Text>
+          <TouchableOpacity>
+            <Text style={styles.title}>Lowkey Squad</Text>
+          </TouchableOpacity>
+          <Text style={styles.online}>
+            {totalMembers} members • {online} online
+          </Text>
         </View>
-        <Image
-          // @ts-ignore
-          style={styles.groupAvatar}
-          source={require('../assets/images/avengers64.png')}
-        />
+        <TouchableOpacity>
+          <Image
+            // @ts-ignore
+            style={styles.groupAvatar}
+            source={require('../assets/images/avengers64.png')}
+          />
+        </TouchableOpacity>
       </View>
       <View style={{flex: 1}}>
         <ScrollView
           style={styles.chatContainer}
           ref={scrollRef}
-          onContentSizeChange={(contentWidth, contentHeight) => {
+          onContentSizeChange={() => {
             scrollRef.current.scrollToEnd({animated: true});
           }}>
           <Messages />
         </ScrollView>
         <View style={styles.footerContainer}>
-          <MenuIcon />
-          <TextInput
-            style={styles.messageInput}
-            placeholder="Message"
-            placeholderTextColor={gray}
-            value={message}
-            onChangeText={setMessage}
-            multiline={true}
-          />
-          <RecordIcon />
+          <TouchableOpacity style={{paddingTop: 5}}>
+            <MenuIcon />
+          </TouchableOpacity>
+          <View style={styles.messageInputContainer}>
+            <TextInput
+              style={styles.messageInput}
+              placeholder="Message"
+              placeholderTextColor={gray}
+              value={message}
+              onChangeText={setMessage}
+              multiline={true}
+            />
+          </View>
+          <TouchableOpacity style={{paddingTop: 4}}>
+            <RecordIcon />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -255,6 +290,7 @@ export default () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
+    position: 'relative',
     backgroundColor: '#1C1A2A',
     height: 88,
     flexDirection: 'row',
@@ -298,24 +334,27 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     backgroundColor: '#14131B', //black
-    paddingBottom: 40,
-    height: 80,
+    paddingBottom: 35,
+    paddingHorizontal: 20,
+    paddingTop: 5,
+    minHeight: 80,
+    maxHeight: 240,
   },
-  messageInput: {
+  messageInputContainer: {
     flex: 1,
     minHeight: 30,
-    backgroundColor: darkPurple,
+    backgroundColor: '#2E2C3C',
     borderRadius: 12,
+    paddingLeft: 20,
+    paddingTop: 3,
+    paddingBottom: 10,
+    paddingRight: 20,
+    marginHorizontal: 10,
+  },
+  messageInput: {
     color: white,
     fontFamily: 'Poppins-Regular',
     fontSize: 15,
-    paddingLeft: 20,
-    paddingVertical: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingRight: 15,
-    marginLeft: 10,
-    marginRight: 10,
   },
   pollContainer: {
     flex: 1,

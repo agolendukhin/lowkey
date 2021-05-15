@@ -9,6 +9,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   nickName: string;
+  online: boolean;
 }
 
 export interface IMessage {
@@ -42,6 +43,7 @@ export const USERS: IUser[] = [
     firstName: 'Anthony',
     lastName: 'Stark',
     nickName: 'ironman',
+    online: true,
   },
   {
     id: 2,
@@ -49,6 +51,7 @@ export const USERS: IUser[] = [
     firstName: 'Thor',
     lastName: 'Odinson',
     nickName: 'thor',
+    online: false,
   },
   {
     id: 3,
@@ -56,6 +59,7 @@ export const USERS: IUser[] = [
     firstName: 'Steven',
     lastName: 'Strange',
     nickName: 'drstrange',
+    online: false,
   },
   {
     id: 4,
@@ -63,6 +67,7 @@ export const USERS: IUser[] = [
     firstName: 'Carol',
     lastName: 'Danvers',
     nickName: 'captainmarvel',
+    online: false,
   },
   {
     id: 5,
@@ -70,6 +75,7 @@ export const USERS: IUser[] = [
     firstName: 'Jessica',
     lastName: 'Jones',
     nickName: 'jjones',
+    online: false,
   },
   {
     id: 6,
@@ -77,6 +83,7 @@ export const USERS: IUser[] = [
     firstName: 'Ororo',
     lastName: 'Munroe',
     nickName: 'storm',
+    online: false,
   },
   {
     id: 7,
@@ -84,6 +91,7 @@ export const USERS: IUser[] = [
     firstName: 'Wanda',
     lastName: 'Maximoff',
     nickName: 'scarletwitch',
+    online: false,
   },
 ];
 

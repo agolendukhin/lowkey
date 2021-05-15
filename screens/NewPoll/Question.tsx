@@ -40,6 +40,7 @@ export default Question;
 const styles = StyleSheet.create({
   questionInput: {
     minHeight: 50,
+    maxHeight: 160,
     backgroundColor: darkPurple,
     borderRadius: 12,
     color: white,
