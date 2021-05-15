@@ -4,7 +4,7 @@
 */
 
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ModalHeader from './ModalHeader';
 import Question from './Question';
@@ -108,7 +108,7 @@ export default NewPoll;
 
 const styles = StyleSheet.create({
   header: {
-    height: 64,
+    height: Platform.OS === 'ios' ? 64 : 0,
     backgroundColor: black,
   },
   container: {

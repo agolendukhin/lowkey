@@ -24,7 +24,7 @@ const Main: React.FC = () => {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor={black} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{height: '100%'}}

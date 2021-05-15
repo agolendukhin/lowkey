@@ -12,9 +12,11 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import {CloseIcon, MenuIcon, RecordIcon} from '../common/icons';
-import {blue, gray, white} from '../common/colors';
+import {black, blue, gray, white} from '../common/colors';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import HighlightedText from '../common/HighlighedText';
@@ -234,6 +236,7 @@ export default () => {
 
   return (
     <View style={{flex: 1}}>
+      <StatusBar barStyle="light-content" backgroundColor="#1C1A2A" />
       <View style={styles.headerContainer}>
         <View style={styles.closeIconContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -292,10 +295,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     position: 'relative',
     backgroundColor: '#1C1A2A',
-    height: 88,
+    height: Platform.OS === 'ios' ? 88 : 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 46,
+    paddingTop: Platform.OS === 'ios' ? 46 : 0,
     paddingLeft: 20,
     paddingRight: 20,
   },
