@@ -3,43 +3,12 @@
     on 13.05.2021:20:28
 */
 
-export interface IUser {
-  id: number;
-  avatarSrc: string;
-  firstName: string;
-  lastName: string;
-  nickName: string;
-  online: boolean;
-}
-
-export interface IMessage {
-  id: number;
-  chatId: number;
-  senderId: number;
-  type: EMesssageTypes;
-  text?: string;
-  poll?: IPoll;
-  // mentionedUserIds could be extracted when a user sends a message with mentioned nicknames
-  mentionedUserIds?: number[];
-  timestamp: number;
-}
-
-interface IOption {
-  id: number;
-  text: string;
-}
-
-interface IPoll {
-  private: boolean;
-  votesCount: number;
-  question: string;
-  options: IOption[];
-}
+import {IMessage, IUser} from './types';
 
 export const USERS: IUser[] = [
   {
     id: 1,
-    avatarSrc: require('./assets/images/ironman.png'),
+    avatarSrc: require('../assets/images/ironman.png'),
     firstName: 'Anthony',
     lastName: 'Stark',
     nickName: 'ironman',
@@ -47,7 +16,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 2,
-    avatarSrc: require('./assets/images/thor.png'),
+    avatarSrc: require('../assets/images/thor.png'),
     firstName: 'Thor',
     lastName: 'Odinson',
     nickName: 'thor',
@@ -55,7 +24,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 3,
-    avatarSrc: require('./assets/images/drstrange.png'),
+    avatarSrc: require('../assets/images/drstrange.png'),
     firstName: 'Steven',
     lastName: 'Strange',
     nickName: 'drstrange',
@@ -63,7 +32,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 4,
-    avatarSrc: require('./assets/images/captainmarvel.png'),
+    avatarSrc: require('../assets/images/captainmarvel.png'),
     firstName: 'Carol',
     lastName: 'Danvers',
     nickName: 'captainmarvel',
@@ -71,7 +40,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 5,
-    avatarSrc: require('./assets/images/jjones.png'),
+    avatarSrc: require('../assets/images/jjones.png'),
     firstName: 'Jessica',
     lastName: 'Jones',
     nickName: 'jjones',
@@ -79,7 +48,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 6,
-    avatarSrc: require('./assets/images/storm.png'),
+    avatarSrc: require('../assets/images/storm.png'),
     firstName: 'Ororo',
     lastName: 'Munroe',
     nickName: 'storm',
@@ -87,7 +56,7 @@ export const USERS: IUser[] = [
   },
   {
     id: 7,
-    avatarSrc: require('./assets/images/scarletwitch.png'),
+    avatarSrc: require('../assets/images/scarletwitch.png'),
     firstName: 'Wanda',
     lastName: 'Maximoff',
     nickName: 'scarletwitch',
@@ -105,7 +74,8 @@ export const MESSAGES: IMessage[] = [
     id: 1,
     chatId: 1,
     senderId: 1,
-    text: 'Have you ever had shawarma?',
+    text:
+      'I know I said no more surprises, but I gotta say, I was really hoping to pull off one last one',
     type: EMesssageTypes.text,
     timestamp: 1620919414716,
   },
@@ -113,15 +83,57 @@ export const MESSAGES: IMessage[] = [
     id: 2,
     chatId: 1,
     senderId: 2,
-    text: 'It looks like Christmas. Only with more...me. Long Long Long',
+    text: "I don't judge people by their worst mistakes",
     type: EMesssageTypes.text,
     timestamp: 1620919414717,
+  },
+  {
+    id: 8,
+    chatId: 1,
+    senderId: 7,
+    type: EMesssageTypes.poll,
+    timestamp: 1620919414722,
+    poll: {
+      private: false,
+      votesCount: 3,
+      question: 'Who is the most brave avenger in the world?',
+      options: [
+        {
+          id: 1,
+          text: 'Iron man',
+        },
+        {
+          id: 2,
+          text: 'Thor',
+        },
+        {
+          id: 3,
+          text: 'Captain Marvel',
+        },
+        {
+          id: 4,
+          text: 'Jessica Jones',
+        },
+        {
+          id: 5,
+          text: 'Dr.Strange',
+        },
+        {
+          id: 6,
+          text: 'Storm',
+        },
+        {
+          id: 7,
+          text: 'Scarlet Witch',
+        },
+      ],
+    },
   },
   {
     id: 3,
     chatId: 1,
     senderId: 3,
-    text: 'It looks like Christmas. Only with more...me. Long Long Long',
+    text: 'It looks like Christmas. Only with more...me.',
     type: EMesssageTypes.text,
     timestamp: 1620919414718,
   },
@@ -129,8 +141,7 @@ export const MESSAGES: IMessage[] = [
     id: 4,
     chatId: 1,
     senderId: 4,
-    text:
-      "[In Russian] Do you really think I'm pretty? Long Long Long.[In Russian] Do you really think I'm pretty? Long Long Long.[In Russian] Do you really think I'm pretty? Long Long Long.[In Russian] Do you really think I'm pretty? Long Long Long.[In Russian] Do you really think I'm pretty? Long Long Long.[In Russian] Do you really think I'm pretty? Long Long Long",
+    text: 'Some people move on, but not us',
     type: EMesssageTypes.text,
     timestamp: 1620919414719,
   },
@@ -138,7 +149,7 @@ export const MESSAGES: IMessage[] = [
     id: 5,
     chatId: 1,
     senderId: 5,
-    text: "[In Russian] @thor do you really think I'm pretty? Long Long Long",
+    text: "@thor do you really think I'm pretty?",
     mentionedUserIds: [2],
     type: EMesssageTypes.text,
     timestamp: 1620919414720,
@@ -147,8 +158,7 @@ export const MESSAGES: IMessage[] = [
     id: 6,
     chatId: 1,
     senderId: 6,
-    text:
-      "@ironman I've got red in my ledger. I'd like to wipe it out. Long Long Long",
+    text: "@ironman I've got red in my ledger. I'd like to wipe it out.",
     type: EMesssageTypes.text,
     mentionedUserIds: [1],
     timestamp: 1620919414721,
@@ -162,7 +172,7 @@ export const MESSAGES: IMessage[] = [
     poll: {
       private: false,
       votesCount: 7,
-      question: 'Who is the topmost avenger in the world? Long Long Long',
+      question: 'Who is the topmost avenger in the world?',
       options: [
         {
           id: 1,
@@ -183,4 +193,20 @@ export const MESSAGES: IMessage[] = [
       ],
     },
   },
+];
+
+export const CHAT_DATA = {
+  id: 1,
+  title: 'Lowkey squad',
+  avatar: require('../assets/images/avengers64.png'),
+};
+
+export const DEFAULT_OPTIONS = [
+  {
+    id: 1,
+    text: 'Thor',
+  },
+  {id: 2, text: 'Iron man'},
+  {id: 3, text: 'Dr.Strange'},
+  {id: 4, text: 'Storm'},
 ];

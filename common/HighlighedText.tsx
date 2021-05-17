@@ -9,7 +9,6 @@
 import React from 'react';
 import {Text} from 'react-native';
 import {findAll} from 'highlight-words-core';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 /**
  * Highlights all occurrences of search terms (searchText) within a string (textToHighlight).

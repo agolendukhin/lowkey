@@ -8,11 +8,7 @@ import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {CloseIcon} from '../../common/icons';
 import {darkBlue, white} from '../../common/colors';
 import {commonStyles} from './styles';
-
-export interface IOption {
-  id: number;
-  text: string;
-}
+import {IOption} from '../../common/types';
 
 interface OptionProps {
   option: IOption;

@@ -12,16 +12,8 @@ import AppSwitch from './AppSwitch';
 import Options from './Options';
 import {black, blue} from '../../common/colors';
 import {AddToListIcon, UserSecretIcon} from '../../common/icons';
+import {DEFAULT_OPTIONS} from '../../common/mock';
 
-const DEFAULT_OPTIONS = [
-  {
-    id: 1,
-    text: 'Los Angeles Lakers',
-  },
-  {id: 2, text: 'Golden State Warriors'},
-  {id: 3, text: 'Chicago Bulls'},
-  {id: 4, text: 'Boston Celtics'},
-];
 const DEFAULT_INITIAL_VALUES = {
   options: DEFAULT_OPTIONS,
   questionValue: '',

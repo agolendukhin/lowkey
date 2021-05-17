@@ -5,9 +5,10 @@
 
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Option, {IOption} from './Option';
+import Option from './Option';
 import {blue} from '../../common/colors';
 import {commonStyles} from './styles';
+import {IOption} from '../../common/types';
 
 interface OptionsProps {
   options: IOption[];
