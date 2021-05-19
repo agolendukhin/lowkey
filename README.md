@@ -12,6 +12,3 @@ To start project on ios
 
 If it will not work try to run 
 - ```npx react-native link```
-
-Currently it has only one screen, the second one (Chat) is not finished. 
-Also the app is not tested on android. 
